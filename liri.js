@@ -40,24 +40,24 @@ switch (cmd) {
 }
 
 function concert() {
-	// "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"
-}
-function spotify() {}
-function movie() {
 	var queryUrl =
-		'http://www.omdbapi.com/?t=' + media + '&y=&plot=short&apikey=trilogy';
-
-	console.log(queryUrl);
+		'https://rest.bandsintown.com/artists/' +
+		media +
+		'/events?app_id=codingbootcamp';
 
 	axios
 		.get(queryUrl)
 		.then(function(response) {
-			console.log('Release Year: ' + response.data.Year);
+			console.log(response.data[0].venue.name);
+			console.log(
+				response.data[0].venue.city + ', ' + response.data[0].venue.country
+			);
+			var datetime = response.data[0].datetime;
+			var datetimeArr = datetime.split('T');
+			console.log(datetimeArr[0] + ' @ ' + datetimeArr[1]); //convert time
 		})
 		.catch(function(error) {
 			if (error.response) {
-				// The request was made and the server responded with a status code
-				// that falls out of the range of 2xx
 				console.log('---------------Data---------------');
 				console.log(error.response.data);
 				console.log('---------------Status---------------');
@@ -65,11 +65,42 @@ function movie() {
 				console.log('---------------Status---------------');
 				console.log(error.response.headers);
 			} else if (error.request) {
-				// The request was made but no response was received
-				// `error.request` is an object that comes back with details pertaining to the error that occurred.
 				console.log(error.request);
 			} else {
-				// Something happened in setting up the request that triggered an Error
+				console.log('Error', error.message);
+			}
+			console.log(error.config);
+		});
+}
+
+function spotify() {}
+
+function movie() {
+	var queryUrl = 'http://www.omdbapi.com/?t=' + media + '&apikey=trilogy';
+
+	axios
+		.get(queryUrl)
+		.then(function(response) {
+			console.log('Title: ' + response.data.Title);
+			console.log('Release Year: ' + response.data.Year);
+			console.log('IMDB: ' + response.data.Ratings[0].Value);
+			console.log('Rotten Tomato: ' + response.data.Ratings[1].Value);
+			console.log('Country: ' + response.data.Country);
+			console.log('Language: ' + response.data.Language);
+			console.log('Plot: ' + response.data.Plot);
+			console.log('Actors: ' + response.data.Actors);
+		})
+		.catch(function(error) {
+			if (error.response) {
+				console.log('---------------Data---------------');
+				console.log(error.response.data);
+				console.log('---------------Status---------------');
+				console.log(error.response.status);
+				console.log('---------------Status---------------');
+				console.log(error.response.headers);
+			} else if (error.request) {
+				console.log(error.request);
+			} else {
 				console.log('Error', error.message);
 			}
 			console.log(error.config);
@@ -87,8 +118,6 @@ function log() {
 	fs.appendFile('log.txt', text, function(err) {
 		if (err) {
 			console.log(err);
-		} else {
-			console.log('Logged');
 		}
 	});
 }
