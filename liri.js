@@ -4,6 +4,8 @@ var fs = require('fs');
 
 var axios = require('axios');
 
+var moment = require('moment');
+
 var nodeArgs = process.argv;
 
 var cmd = process.argv[2];
@@ -103,16 +105,24 @@ function doIt() {
 			return console.log(err);
 		}
 
-		var dataArr = data.split(',');
+		var dataArr = data.split(','); // spaces
 
-		console.log(
+		console
+			.log // remove quotation marks
 			// 'node liri.js' + dataArr[2] + ' ' + dataArr[3].replace(/\W'|'\W/)
-		);
+			();
 	});
 }
 
 function log() {
-	var text = process.argv[2] + ' ' + media + '\n'; //add date and time logged
+	var text =
+		'\n (' +
+		moment().format('MM/DD/YY|HH:mm') +
+		'): ' +
+		process.argv[2] +
+		' "' +
+		media.replace(/%20/g, ' ') +
+		'"';
 
 	// add data from other functions too
 
