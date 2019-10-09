@@ -1,23 +1,22 @@
 require('dotenv').config();
 
+var fs = require('fs');
+
 var axios = require('axios');
+
+var nodeArgs = process.argv;
 
 var cmd = process.argv[2];
 
-var media = process.argv[3];
+var media = '';
 
-// var nodeArgs = process.argv;
-
-// var media = "";
-
-// for (let i = 2; i < nodeArgs.length; i++) {
-
-//     if (i > 2 && i < nodeArgs.length) {
-//         media = media + "+" + nodeArgs[i];
-//     } else {
-//         media += nodeArgs[i];
-//     }
-// }
+for (let i = 3; i < nodeArgs.length; i++) {
+	if (i > 3 && i < nodeArgs.length) {
+		media = media + '%20' + nodeArgs[i];
+	} else {
+		media += nodeArgs[i];
+	}
+}
 
 log();
 
@@ -48,32 +47,35 @@ function concert() {
 	axios
 		.get(queryUrl)
 		.then(function(response) {
-			console.log(response.data[0].venue.name);
-			console.log(
-				response.data[0].venue.city + ', ' + response.data[0].venue.country
-			);
-			var datetime = response.data[0].datetime;
-			var datetimeArr = datetime.split('T');
-			console.log(datetimeArr[0] + ' @ ' + datetimeArr[1]); //convert time
+			for (let i = 0; i < 3; i++) {
+				console.log('\n' + response.data[i].venue.name);
+				console.log(
+					response.data[i].venue.city + ', ' + response.data[i].venue.country
+				);
+				var datetime = response.data[i].datetime;
+				var datetimeArr = datetime.split('T');
+				console.log(datetimeArr[0] + ' @ ' + datetimeArr[1]); //convert time using moment
+			}
 		})
 		.catch(function(error) {
-			if (error.response) {
-				console.log('---------------Data---------------');
-				console.log(error.response.data);
-				console.log('---------------Status---------------');
-				console.log(error.response.status);
-				console.log('---------------Status---------------');
-				console.log(error.response.headers);
-			} else if (error.request) {
-				console.log(error.request);
-			} else {
-				console.log('Error', error.message);
-			}
-			console.log(error.config);
+			error();
 		});
 }
 
-function spotify() {}
+function spotify() {
+	var queryUrl =
+		'https://rest.bandsintown.com/artists/' +
+		media +
+		'/events?app_id=codingbootcamp';
+	axios
+		.get(queryUrl)
+		.then(function(response) {
+			console.log(response.data[0].venue.name);
+		})
+		.catch(function(error) {
+			error();
+		});
+}
 
 function movie() {
 	var queryUrl = 'http://www.omdbapi.com/?t=' + media + '&apikey=trilogy';
@@ -91,26 +93,25 @@ function movie() {
 			console.log('Actors: ' + response.data.Actors);
 		})
 		.catch(function(error) {
-			if (error.response) {
-				console.log('---------------Data---------------');
-				console.log(error.response.data);
-				console.log('---------------Status---------------');
-				console.log(error.response.status);
-				console.log('---------------Status---------------');
-				console.log(error.response.headers);
-			} else if (error.request) {
-				console.log(error.request);
-			} else {
-				console.log('Error', error.message);
-			}
-			console.log(error.config);
+			error(error);
 		});
 }
-function doIt() {}
+
+function doIt() {
+	fs.readFile('random.txt', 'utf8', function(err, data) {
+		if (err) {
+			return console.log(err);
+		}
+
+		var dataArr = data.split(',');
+
+		console.log(
+			// 'node liri.js' + dataArr[2] + ' ' + dataArr[3].replace(/\W'|'\W/)
+		);
+	});
+}
 
 function log() {
-	var fs = require('fs');
-
 	var text = process.argv[2] + ' ' + media + '\n'; //add date and time logged
 
 	// add data from other functions too
@@ -121,3 +122,21 @@ function log() {
 		}
 	});
 }
+
+// function error(error) {
+// 	if (error.response) {
+// 		console.log('---------------Data---------------');
+// 		console.log(error.response.data);
+// 		console.log('---------------Status---------------');
+// 		console.log(error.response.status);
+// 		console.log('---------------Status---------------');
+// 		console.log(error.response.headers);
+// 	} else if (error.request) {
+// 		console.log(error.request);
+// 	} else {
+// 		console.log('Error', error.message);
+// 	}
+// 	console.log(error.config);
+// }
+
+//hide api key
