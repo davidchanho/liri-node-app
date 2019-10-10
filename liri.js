@@ -4,6 +4,12 @@ var keys = require('./keys.js');
 
 var fs = require('fs');
 
+var util = require('util');
+
+var logFile = fs.createWriteStream('log.txt', { flags: 'a' });
+
+var logStdout = process.stdout;
+
 var axios = require('axios');
 
 var moment = require('moment');
@@ -31,8 +37,6 @@ for (let i = 3; i < nodeArgs.length; i++) {
 		media += nodeArgs[i];
 	}
 }
-
-log();
 
 switch (cmd) {
 	case 'concert-this':
@@ -82,12 +86,18 @@ function spotify2 () {
 		.search({ type: 'track', query: media.replace('%20', '+'), limit:1 })
 		.then(function (response) {
 			let track = response.tracks.items[0];
-			console.log("song ", track.name + " by " + track.artists[0].name);
-			console.log("album ", track.album.name);
+			console.log("song: ", track.name + " by " + track.artists[0].name);
+			console.log("album: ", track.album.name);
 			console.log("preview_url: ", track.preview_url);
 		})
-		.catch(function (err) {
-			console.log(err);
+		.catch(function (err) {//default to "The Sign" by Ace of Base
+			spotify.search({ type: 'track', query: "The Sign", limit: 1 })
+				.then(function (response) {
+					let track = response.tracks.items[0];
+					console.log("song ", track.name + " by " + track.artists[0].name);
+					console.log("album ", track.album.name);
+					console.log("preview_url: ", track.preview_url);
+				})
 		});
 }
 
@@ -127,24 +137,26 @@ function doIt() {
 	});
 }
 
+log();
+
 function log() {
 	var text =
-		'\n [' +
+		'\n[' +
 		moment().format('MM/DD/YY|HH:mm') +
 		']: ' +
 		process.argv[2] +
 		' "' +
 		media.replace(/%20/g, ' ') +
-		'"';
+		'"\n\t';
 
-	var log = '\n';
-	// add data from other functions
+	fs.appendFile('log.txt', text, function() {
 
-	fs.appendFile('log.txt', text + log, function(err) {
-		if (err) {
-			console.log(err);
-		}
 	});
+	console.log = function () {
+		logFile.write(util.format.apply(null, arguments) + '\n\t');
+		logStdout.write(util.format.apply(null, arguments) + '\n\t');
+	}
+	console.error = console.log;
 }
 
 // function err(err) {
@@ -162,4 +174,7 @@ function log() {
 // 	}
 // 	console.log(err.config);
 // }
+
+
+
 
