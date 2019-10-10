@@ -6,6 +6,10 @@ var axios = require('axios');
 
 var moment = require('moment');
 
+var spotify = require('spotify');
+
+var inquirer = require('inquirer');
+
 var nodeArgs = process.argv;
 
 var cmd = process.argv[2];
@@ -36,7 +40,7 @@ switch (cmd) {
 		doIt();
 		break;
 	default:
-		'what?';
+		console.log('what?');
 		break;
 }
 
@@ -55,28 +59,26 @@ function concert() {
 					response.data[i].venue.city + ', ' + response.data[i].venue.country
 				);
 				var datetime = response.data[i].datetime;
-				var datetimeArr = datetime.split('T');
-				console.log(datetimeArr[0] + ' @ ' + datetimeArr[1]); //convert time using moment
+				var momentDate = moment(datetime);
+				console.log(momentDate.format('MM/DD/YY hh:mm A'));
 			}
 		})
-		.catch(function(error) {
-			error();
+		.catch(function(err) {
+			err();
 		});
 }
 
 function spotify() {
-	var queryUrl =
-		'https://rest.bandsintown.com/artists/' +
-		media +
-		'/events?app_id=codingbootcamp';
-	axios
-		.get(queryUrl)
-		.then(function(response) {
-			console.log(response.data[0].venue.name);
-		})
-		.catch(function(error) {
-			error();
-		});
+	spotify.search({ type: 'track', query: 'dancing in the moonlight' }, function(
+		err,
+		data
+	) {
+		if (err) {
+			console.log('err occurred: ' + err);
+			return;
+		}
+		console.log(JSON.stringify(data, query));
+	});
 }
 
 function movie() {
@@ -84,18 +86,19 @@ function movie() {
 
 	axios
 		.get(queryUrl)
-		.then(function(response) {
-			console.log('Title: ' + response.data.Title);
-			console.log('Release Year: ' + response.data.Year);
-			console.log('IMDB: ' + response.data.Ratings[0].Value);
-			console.log('Rotten Tomato: ' + response.data.Ratings[1].Value);
-			console.log('Country: ' + response.data.Country);
-			console.log('Language: ' + response.data.Language);
-			console.log('Plot: ' + response.data.Plot);
-			console.log('Actors: ' + response.data.Actors);
+		.then(function (response) {
+			var result = response.data;
+			console.log('Title: ', result.Title);
+			console.log('Release Year: ', result.Year);
+			console.log('IMDB: ', result.Ratings[0].Value);
+			console.log('Rotten Tomato: ', result.Ratings[1].Value);
+			console.log('Country: ', result.Country);
+			console.log('Language: ', result.Language);
+			console.log('Plot: ', result.Plot);
+			console.log('Actors: ', result.Actors);
 		})
-		.catch(function(error) {
-			error(error);
+		.catch(function(err) {
+			err(err);
 		});
 }
 
@@ -124,29 +127,71 @@ function log() {
 		media.replace(/%20/g, ' ') +
 		'"';
 
-	// add data from other functions too
+	var log = '\n';
+	// add data from other functions
 
-	fs.appendFile('log.txt', text, function(err) {
+	fs.appendFile('log.txt', text + log, function(err) {
 		if (err) {
 			console.log(err);
 		}
 	});
 }
 
-// function error(error) {
-// 	if (error.response) {
+// function err(err) {
+// 	if (err.response) {
 // 		console.log('---------------Data---------------');
-// 		console.log(error.response.data);
+// 		console.log(err.response.data);
 // 		console.log('---------------Status---------------');
-// 		console.log(error.response.status);
+// 		console.log(err.response.status);
 // 		console.log('---------------Status---------------');
-// 		console.log(error.response.headers);
-// 	} else if (error.request) {
-// 		console.log(error.request);
+// 		console.log(err.response.headers);
+// 	} else if (err.request) {
+// 		console.log(err.request);
 // 	} else {
-// 		console.log('Error', error.message);
+// 		console.log('err', err.message);
 // 	}
-// 	console.log(error.config);
+// 	console.log(err.config);
 // }
 
 //hide api key
+
+// Create a "Prompt" with a series of questions.
+// inquirer
+// 	.prompt([
+// 		// Here we create a basic text prompt.
+// 		{
+// 			type: "input",
+// 			message: "What is your name?",
+// 			name: "username"
+// 		},
+// 		// Here we create a basic password-protected text prompt.
+// 		{
+// 			type: "password",
+// 			message: "Set your password",
+// 			name: "password"
+// 		},
+// 		// Here we give the user a list to choose from.
+// 		{
+// 			type: "list",
+// 			message: "Which Pokemon do you choose?",
+// 			choices: ["Bulbasaur", "Squirtle", "Charmander"],
+// 			name: "pokemon"
+// 		},
+// 		// Here we ask the user to confirm.
+// 		{
+// 			type: "confirm",
+// 			message: "Are you sure:",
+// 			name: "confirm",
+// 			default: true
+// 		}
+// 	])
+// 	.then(function (inquirerResponse) {
+// 		// If the inquirerResponse confirms, we displays the inquirerResponse's username and pokemon from the answers.
+// 		if (inquirerResponse.confirm) {
+// 			console.log("\nWelcome " + inquirerResponse.username);
+// 			console.log("Your " + inquirerResponse.pokemon + " is ready for battle!\n");
+// 		}
+// 		else {
+// 			console.log("\nThat's okay " + inquirerResponse.username + ", come again when you are more sure.\n");
+// 		}
+// 	});
