@@ -1,14 +1,22 @@
 require('dotenv').config();
 
+var keys = require('./keys.js');
+
 var fs = require('fs');
 
 var axios = require('axios');
 
 var moment = require('moment');
 
-var spotify = require('spotify');
+var Spotify = require('node-spotify-api');
+
+var spotify = new Spotify(keys.spotify);
 
 var inquirer = require('inquirer');
+
+// var BT = new BT(id.BT);
+
+// var OMDB = new OMDB(keys.OMDB);
 
 var nodeArgs = process.argv;
 
@@ -31,7 +39,7 @@ switch (cmd) {
 		concert();
 		break;
 	case 'spotify-this-song':
-		spotify();
+		spotify2();
 		break;
 	case 'movie-this':
 		movie();
@@ -68,17 +76,19 @@ function concert() {
 		});
 }
 
-function spotify() {
-	spotify.search({ type: 'track', query: 'dancing in the moonlight' }, function(
-		err,
-		data
-	) {
-		if (err) {
-			console.log('err occurred: ' + err);
-			return;
-		}
-		console.log(JSON.stringify(data, query));
-	});
+function spotify2 () {
+
+	spotify
+		.search({ type: 'track', query: media.replace('%20', '+'), limit:1 })
+		.then(function (response) {
+			let track = response.tracks.items[0];
+			console.log("song ", track.name + " by " + track.artists[0].name);
+			console.log("album ", track.album.name);
+			console.log("preview_url: ", track.preview_url);
+		})
+		.catch(function (err) {
+			console.log(err);
+		});
 }
 
 function movie() {
@@ -86,7 +96,7 @@ function movie() {
 
 	axios
 		.get(queryUrl)
-		.then(function (response) {
+		.then(function(response) {
 			var result = response.data;
 			console.log('Title: ', result.Title);
 			console.log('Release Year: ', result.Year);
@@ -109,19 +119,19 @@ function doIt() {
 		}
 
 		var dataArr = data.split(','); // spaces
-
-		console
-			.log // remove quotation marks
-			// 'node liri.js' + dataArr[2] + ' ' + dataArr[3].replace(/\W'|'\W/)
-			();
+		var rnd = Math.floor(Math.random() * (dataArr.length - 1));
+		console.log(
+			// remove quotation marks
+			`node liri.js ${dataArr[rnd]} ${dataArr[rnd + 1]}`
+		);
 	});
 }
 
 function log() {
 	var text =
-		'\n (' +
+		'\n [' +
 		moment().format('MM/DD/YY|HH:mm') +
-		'): ' +
+		']: ' +
 		process.argv[2] +
 		' "' +
 		media.replace(/%20/g, ' ') +
@@ -153,45 +163,3 @@ function log() {
 // 	console.log(err.config);
 // }
 
-//hide api key
-
-// Create a "Prompt" with a series of questions.
-// inquirer
-// 	.prompt([
-// 		// Here we create a basic text prompt.
-// 		{
-// 			type: "input",
-// 			message: "What is your name?",
-// 			name: "username"
-// 		},
-// 		// Here we create a basic password-protected text prompt.
-// 		{
-// 			type: "password",
-// 			message: "Set your password",
-// 			name: "password"
-// 		},
-// 		// Here we give the user a list to choose from.
-// 		{
-// 			type: "list",
-// 			message: "Which Pokemon do you choose?",
-// 			choices: ["Bulbasaur", "Squirtle", "Charmander"],
-// 			name: "pokemon"
-// 		},
-// 		// Here we ask the user to confirm.
-// 		{
-// 			type: "confirm",
-// 			message: "Are you sure:",
-// 			name: "confirm",
-// 			default: true
-// 		}
-// 	])
-// 	.then(function (inquirerResponse) {
-// 		// If the inquirerResponse confirms, we displays the inquirerResponse's username and pokemon from the answers.
-// 		if (inquirerResponse.confirm) {
-// 			console.log("\nWelcome " + inquirerResponse.username);
-// 			console.log("Your " + inquirerResponse.pokemon + " is ready for battle!\n");
-// 		}
-// 		else {
-// 			console.log("\nThat's okay " + inquirerResponse.username + ", come again when you are more sure.\n");
-// 		}
-// 	});
