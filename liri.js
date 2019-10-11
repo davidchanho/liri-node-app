@@ -6,10 +6,6 @@ var fs = require('fs');
 
 var util = require('util');
 
-var logFile = fs.createWriteStream('log.txt', { flags: 'a' });
-
-var logStdout = process.stdout;
-
 var axios = require('axios');
 
 var moment = require('moment');
@@ -18,11 +14,9 @@ var Spotify = require('node-spotify-api');
 
 var spotify = new Spotify(keys.spotify);
 
-var inquirer = require('inquirer');
+var logFile = fs.createWriteStream('log.txt', { flags: 'a' });
 
-// var BT = new BT(id.BT);
-
-// var OMDB = new OMDB(keys.OMDB);
+var logStdout = process.stdout;
 
 var nodeArgs = process.argv;
 
@@ -68,7 +62,7 @@ function concert() {
 			for (let i = 0; i < 3; i++) {
 				console.log('\n' + response.data[i].venue.name);
 				console.log(
-					response.data[i].venue.city + ', ' + response.data[i].venue.country
+					response.data[i].venue.city + ', ' + response.data[i].venue.region + ' ' + response.data[i].venue.country
 				);
 				var datetime = response.data[i].datetime;
 				var momentDate = moment(datetime);
@@ -81,7 +75,6 @@ function concert() {
 }
 
 function spotify2 () {
-
 	spotify
 		.search({ type: 'track', query: media.replace('%20', '+'), limit:1 })
 		.then(function (response) {
@@ -91,13 +84,14 @@ function spotify2 () {
 			console.log("preview_url: ", track.preview_url);
 		})
 		.catch(function (err) {//default to "The Sign" by Ace of Base
-			spotify.search({ type: 'track', query: "The Sign", limit: 1 })
-				.then(function (response) {
-					let track = response.tracks.items[0];
-					console.log("song ", track.name + " by " + track.artists[0].name);
-					console.log("album ", track.album.name);
-					console.log("preview_url: ", track.preview_url);
-				})
+		spotify
+			.request('https://api.spotify.com/v1/tracks/0hrBpAOgrt8RXigk83LLNE')
+			.then(function (data) {
+	//   var songData = data.
+	  console.log("song: ", data.name + " by " + data.artists[0].name);
+	console.log("album: ", data.album.name);
+	console.log("preview_url: ", data.preview_url);
+  })
 		});
 }
 
@@ -158,23 +152,3 @@ function log() {
 	}
 	console.error = console.log;
 }
-
-// function err(err) {
-// 	if (err.response) {
-// 		console.log('---------------Data---------------');
-// 		console.log(err.response.data);
-// 		console.log('---------------Status---------------');
-// 		console.log(err.response.status);
-// 		console.log('---------------Status---------------');
-// 		console.log(err.response.headers);
-// 	} else if (err.request) {
-// 		console.log(err.request);
-// 	} else {
-// 		console.log('err', err.message);
-// 	}
-// 	console.log(err.config);
-// }
-
-
-
-

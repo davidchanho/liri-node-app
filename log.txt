@@ -1,31 +1,34 @@
 
-
- [10/10/19|13:00]: spotify-this-song "social c"
-song:  Titta på Birgit Nilsson a) Social Call b) Habaneran c). Beat out that rhythm on a drum by Monica Zetterlund
-album:  Monica Zetterlund På Berns 1964
-preview_url:  https://p.scdn.co/mp3-preview/a9036855cdd6261cf86588721dda44dc32723b2e?cid=9a303c4a1a4f4518a34108d33af1733d
-
- [10/10/19|13:01]: movie-this "the dark knight"
-Title:  The Dark Knight
-Release Year:  2008
-IMDB:  9.0/10
-Rotten Tomato:  94%
-Country:  USA, UK
-Language:  English, Mandarin
-Plot:  When the menace known as The Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham. The Dark Knight must accept one of the greatest psychological and physical tests of his ability to fight injustice.
-Actors:  Christian Bale, Heath Ledger, Aaron Eckhart, Michael Caine
-
-[10/10/19|13:02]: movie-this "the dark knight"
-Title:  The Dark Knight
-	Release Year:  2008
-	IMDB:  9.0/10
-	Rotten Tomato:  94%
-	Country:  USA, UK
-	Language:  English, Mandarin
-	Plot:  When the menace known as The Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham. The Dark Knight must accept one of the greatest psychological and physical tests of his ability to fight injustice.
-	Actors:  Christian Bale, Heath Ledger, Aaron Eckhart, Michael Caine
+[10/10/19|21:43]: spotify-this-song "there is a light tha"
+	song:  The Sign by Ace of Base
+	album:  The Sign (US Album) [Remastered]
+	preview_url:  https://p.scdn.co/mp3-preview/4c463359f67dd3546db7294d236dd0ae991882ff?cid=9a303c4a1a4f4518a34108d33af1733d
 	
-[10/10/19|13:03]: movie-this "the dark knight"
+[10/10/19|21:43]: spotify-this-song "there is a light that never goes out"
+	song:  The Sign by Ace of Base
+	album:  The Sign (US Album) [Remastered]
+	preview_url:  https://p.scdn.co/mp3-preview/4c463359f67dd3546db7294d236dd0ae991882ff?cid=9a303c4a1a4f4518a34108d33af1733d
+	
+[10/10/19|21:43]: spotify-this-song "beat it"
+	song:  Beat It - Single Version by Michael Jackson
+	album:  Thriller 25 Super Deluxe Edition
+	preview_url:  https://p.scdn.co/mp3-preview/4901df6e0f8bf6ce93e08df7d98a50e220c45799?cid=9a303c4a1a4f4518a34108d33af1733d
+	
+[10/10/19|21:44]: concert-this "cage the elephant"
+	
+Tecate Live Out 2019
+	Monterrey,  Mexico
+	10/19/19 01:00 PM
+	
+Pepsi Center WTC
+	Mexico,  Mexico
+	10/21/19 08:30 PM
+	
+The Fillmore Charlotte presented by Cricket Wireless
+	Charlotte, NC United States
+	12/02/19 08:00 PM
+	
+[10/10/19|21:44]: movie-this "the dark knight"
 	Title:  The Dark Knight
 	Release Year:  2008
 	IMDB:  9.0/10
@@ -34,4 +37,24 @@ Title:  The Dark Knight
 	Language:  English, Mandarin
 	Plot:  When the menace known as The Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham. The Dark Knight must accept one of the greatest psychological and physical tests of his ability to fight injustice.
 	Actors:  Christian Bale, Heath Ledger, Aaron Eckhart, Michael Caine
+	
+[10/10/19|21:45]: movie-this "joker"
+	Title:  Joker
+	Release Year:  2019
+	IMDB:  9.1/10
+	Rotten Tomato:  77%
+	Country:  USA, Canada
+	Language:  English
+	Plot:  A gritty character study of Arthur Fleck, a man disregarded by society.
+	Actors:  Joaquin Phoenix, Robert De Niro, Zazie Beetz, Frances Conroy
+	
+[10/10/19|21:46]: do-what-it-says ""
+	node liri.js 
+concert-this "The Cure"
+	
+[10/10/19|21:48]: do-what-it-says ""
+	
+[10/10/19|21:48]: do-what-it-says ""
+	node liri.js "I Want it That Way" 
+concert-this
 	
