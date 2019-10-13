@@ -123,9 +123,9 @@ function doIt() {
 	fs.readFile('random.txt', 'utf8', function(err, data) {
 		if (err) {
 			return console.log(err);
-		}// randomizer fix
+		}
 		var dataArr = data.split(',');
-		var randomNumber = Math.floor(Math.random() * (dataArr.length / 2));
+		var randomNumber = Math.floor(Math.random() * dataArr.length );
 		if (randomNumber % 2 === 0) {
 			randomNumber = randomNumber;
 		} else {
