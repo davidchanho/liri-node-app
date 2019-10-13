@@ -139,11 +139,12 @@ function doIt() {
 }
 
 function log(cmd, media) {
-	var text = `[${moment().format('MM/DD/YY|HH:mm')}]: ${cmd} ${media.replace(
-		/%20/g,
-		' '
-	)}
-	`;
+	var text = `
+[${moment().format('MM/DD/YY|HH:mm')}]: ${cmd} ${media.replace(
+	/%20/g,
+	' '
+)}
+`;
 
 	fs.appendFile('log.txt', text, function() {});
 	console.log = function() {
