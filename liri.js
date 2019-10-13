@@ -15,7 +15,6 @@ var nodeArgs = process.argv;
 mediaString();
 
 function mediaString() {
-
 	var cmd = process.argv[2];
 	var media = '';
 	for (let i = 3; i < nodeArgs.length; i++) {
@@ -29,7 +28,7 @@ function mediaString() {
 	log(cmd, media);
 }
 
-function command (cmd, media) {
+function command(cmd, media) {
 	switch (cmd) {
 		case 'do-what-it-says':
 			doIt();
@@ -49,32 +48,30 @@ function command (cmd, media) {
 	}
 }
 
-function concert (media) {
+function concert(media) {
 	var queryUrl =
 		'https://rest.bandsintown.com/artists/' +
-		media+
+		media +
 		'/events?app_id=codingbootcamp';
-	axios
-		.get(queryUrl)
-		.then(function (response) {
-			for (let i = 0; i < 3; i++) {
-				console.log(response.data[i].venue.name);
-				console.log(
-					response.data[i].venue.city +
-						', ' +
-						response.data[i].venue.region +
-						' ' +
+	axios.get(queryUrl).then(function(response) {
+		for (let i = 0; i < 3; i++) {
+			console.log(response.data[i].venue.name);
+			console.log(
+				response.data[i].venue.city +
+					', ' +
+					response.data[i].venue.region +
+					' ' +
 					response.data[i].venue.country
-				);
-				var datetime = response.data[i].datetime;
-				var momentDate = moment(datetime);
-				console.log(momentDate.format('MM/DD/YY hh:mm A'));
-				console.log('\n');
-			}
-		})
-		// .catch(function(err) {
-		// 	err();
-		// });
+			);
+			var datetime = response.data[i].datetime;
+			var momentDate = moment(datetime);
+			console.log(momentDate.format('MM/DD/YY hh:mm A'));
+			console.log('\n');
+		}
+	});
+	// .catch(function(err) {
+	// 	err();
+	// });
 }
 
 function spotify2(media) {
@@ -125,7 +122,7 @@ function doIt() {
 			return console.log(err);
 		}
 		var dataArr = data.split(',');
-		var randomNumber = Math.floor(Math.random() * dataArr.length );
+		var randomNumber = Math.floor(Math.random() * dataArr.length);
 		if (randomNumber % 2 === 0) {
 			randomNumber = randomNumber;
 		} else {
@@ -139,12 +136,13 @@ function doIt() {
 }
 
 function log(cmd, media) {
-	var text = `
-[${moment().format('MM/DD/YY|HH:mm')}]: ${cmd} ${media.replace(
-	/%20/g,
-	' '
-)}
-`;
+	var text =
+		'[' +
+		moment().format('MM/DD/YY|HH:mm') +
+		']: ' +
+		cmd +
+		' ' +
+		media.replace(/%20/g, ' ');
 
 	fs.appendFile('log.txt', text, function() {});
 	console.log = function() {
