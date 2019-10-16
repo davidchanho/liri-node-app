@@ -5,6 +5,8 @@
 2. Give start-to-finish instructions on how to run the app
 3. Include screenshots, gifs or videos of the app functioning -->
 
+![alt text](CaptureA.PNG "Title");
+
 ## Technology
 * node.js
   * fs
