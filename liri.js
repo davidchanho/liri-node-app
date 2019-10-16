@@ -1,7 +1,6 @@
 require('dotenv').config();
 var keys = require('./keys.js');
 var fs = require('fs');
-const readline = require('readline');
 var util = require('util');
 var axios = require('axios');
 var moment = require('moment');
@@ -34,13 +33,13 @@ function command(cmd, media) {
 			doIt();
 			break;
 		case 'concert-this':
-			concert(media);
+			concertThis(media);
 			break;
 		case 'spotify-this-song':
-			spotify2(media);
+			spotifyThis(media);
 			break;
 		case 'movie-this':
-			movie(media);
+			movieThis(media);
 			break;
 		default:
 			console.log('what?');
@@ -48,72 +47,81 @@ function command(cmd, media) {
 	}
 }
 
-function concert(media) {
+function concertThis(media) {
 	var queryUrl =
 		'https://rest.bandsintown.com/artists/' +
 		media +
 		'/events?app_id=codingbootcamp';
-	axios.get(queryUrl).then(function(response) {
-		for (let i = 0; i < 3; i++) {
-			console.log(response.data[i].venue.name);
-			console.log(
-				response.data[i].venue.city +
-					', ' +
-					response.data[i].venue.region +
-					' ' +
-					response.data[i].venue.country
-			);
-			var datetime = response.data[i].datetime;
-			var momentDate = moment(datetime);
-			console.log(momentDate.format('MM/DD/YY hh:mm A'));
-			console.log('\n');
-		}
-	});
-	// .catch(function(err) {
-	// 	err();
-	// });
+	axios
+		.get(queryUrl)
+		.then(function(response) {
+			for (let i = 0; i < 3; i++) {
+				console.log(response.data[i].venue.name);
+				console.log(
+					response.data[i].venue.city +
+						', ' +
+						response.data[i].venue.region +
+						' ' +
+						response.data[i].venue.country
+				);
+				var datetime = response.data[i].datetime;
+				var momentDate = moment(datetime);
+				console.log(momentDate.format('MM/DD/YY hh:mm A'));
+			}
+		})
+		.catch(function() {
+			console.log('Error');
+		});
 }
 
-function spotify2(media) {
+function spotifyThis(media) {
 	spotify
 		.search({ type: 'track', query: media.replace('%20', '+'), limit: 1 })
 		.then(function(response) {
 			let track = response.tracks.items[0];
-			console.log('song: ', track.name + ' by ' + track.artists[0].name);
+			console.log('song: ' + track.name + ' by ' + track.artists[0].name);
 			console.log('album: ', track.album.name);
 			console.log('preview_url: ', track.preview_url);
 		})
-		.catch(function(err) {
+		.catch(function() {
 			spotify
 				.request('https://api.spotify.com/v1/tracks/0hrBpAOgrt8RXigk83LLNE')
-				.then(function(data) {
-					console.log('song: ', data.name + ' by ' + data.artists[0].name);
-					console.log('album: ', data.album.name);
-					console.log('preview_url: ', data.preview_url);
+				.then(function(response) {
+					console.log(
+						"Sorry, couldn't find that. Here's " +
+							response.name +
+							' by ' +
+							response.artists[0].name +
+							' instead.'
+					);
+					console.log('album: ', response.album.name);
+					console.log('preview_url: ', response.preview_url);
 				});
 		});
 }
 
-function movie(media) {
+function movieThis(media) {
 	var queryUrl =
 		'http://www.omdbapi.com/?t=' +
 		media.replace(' ', '+').trim() +
 		'&apikey=trilogy';
 
-	axios.get(queryUrl).then(function(response) {
-		var result = response.data;
-		console.log('Title: ', result.Title);
-		console.log('Release Year: ', result.Year);
-		console.log('IMDB: ', result.Ratings[0].Value);
-		console.log('Rotten Tomato: ', result.Ratings[1].Value);
-		console.log('Country: ', result.Country);
-		console.log('Language: ', result.Language);
-		console.log('Plot: ', result.Plot);
-		console.log('Actors: ', result.Actors);
-	});
-	// .catch(function(err) {
-	// 	err(err);
-	// });
+	axios
+		.get(queryUrl)
+		.then(function(response) {
+			var result = response.data;
+			console.log('Title: ', result.Title);
+			console.log('Release Year: ', result.Year);
+			console.log('IMDB: ', result.Ratings[0].Value);
+			console.log('Rotten Tomato: ', result.Ratings[1].Value);
+			console.log('Country: ', result.Country);
+			console.log('Language: ', result.Language);
+			console.log('Plot: ', result.Plot);
+			console.log('Actors: ', result.Actors);
+		})
+		.catch(function() {
+			return console.log('error: try again');
+		});
 }
 
 function doIt() {
@@ -136,14 +144,9 @@ function doIt() {
 }
 
 function log(cmd, media) {
-	var text =
-		'[' +
-		moment().format('MM/DD/YY|HH:mm') +
-		']: ' +
-		cmd +
-		' ' +
-		media.replace(/%20/g, ' ');
-
+	var text = `
+[${moment().format('MM/DD/YY|HH:mm')}]: ${cmd} ${media.replace(/%20/g, ' ')}
+`;
 	fs.appendFile('log.txt', text, function() {});
 	console.log = function() {
 		logFile.write(util.format.apply(null, arguments) + '\n');
